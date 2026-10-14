@@ -1,0 +1,779 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskFlow Ultra | Productivity Studio</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg:#f5f4ff;
+  --panel:rgba(255,255,255,.88);
+  --text:#252344;
+  --muted:#8584a5;
+  --border:#e8e5fa;
+  --primary:#7857ff;
+  --pink:#ff5fb7;
+  --cyan:#42c9ff;
+  --green:#14c99a;
+  --shadow:0 15px 45px #5242a411;
+}
+
+* {box-sizing:border-box;margin:0;padding:0}
+
+body {
+  font-family:Inter,Arial,sans-serif;
+  background:
+    radial-gradient(ellipse at 5% 5%,#e8ddff 0,transparent 35%),
+    radial-gradient(ellipse at 95% 20%,#ffdef0 0,transparent 30%),
+    var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  transition:background .3s,color .3s;
+}
+
+body.dark {
+  --bg:#101225;
+  --panel:rgba(27,29,53,.92);
+  --text:#f5f3ff;
+  --muted:#aaa9ca;
+  --border:#363653;
+  --shadow:0 15px 45px #0003;
+  background:
+    radial-gradient(ellipse at 5% 5%,#292052 0,transparent 35%),
+    radial-gradient(ellipse at 95% 20%,#40213d 0,transparent 30%),
+    var(--bg);
+}
+
+button,input,select,textarea {font:inherit}
+button {cursor:pointer;transition:.2s}
+button:hover {transform:translateY(-2px)}
+button:focus-visible,input:focus-visible,select:focus-visible {
+  outline:2px solid var(--primary);
+  outline-offset:3px;
+}
+
+.app {width:min(1250px,94%);margin:auto;padding:25px 0 35px}
+
+.nav {
+  display:flex;justify-content:space-between;align-items:center;
+  gap:15px;flex-wrap:wrap;margin-bottom:27px;
+}
+
+.logo {font-size:25px;font-weight:800;letter-spacing:-1px}
+.logo span {
+  background:linear-gradient(90deg,var(--primary),var(--pink));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+
+.nav-right {display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+
+.btn {
+  border:0;border-radius:12px;padding:12px 16px;
+  background:linear-gradient(120deg,var(--primary),#a34fff,var(--pink));
+  color:white;font-weight:700;
+  box-shadow:0 7px 20px #805bff25;
+}
+
+.btn.secondary {
+  background:var(--panel);color:var(--text);
+  border:1px solid var(--border);box-shadow:none;
+}
+
+.hero {
+  position:relative;overflow:hidden;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:25px;padding:38px;border-radius:27px;color:white;
+  background:linear-gradient(115deg,#5541df 0%,#8651ff 48%,#ef62ba 100%);
+  box-shadow:0 20px 50px #8258ff35;margin-bottom:23px;
+}
+
+.hero:before,.hero:after {
+  content:"";position:absolute;border-radius:50%;
+  background:#ffffff12;pointer-events:none;
+}
+.hero:before {width:280px;height:280px;right:100px;top:-180px}
+.hero:after {width:200px;height:200px;right:-65px;bottom:-120px}
+
+.hero-content {position:relative;z-index:1}
+.eyebrow {font-size:11px;letter-spacing:2px;font-weight:800}
+.hero h1 {font-size:clamp(30px,5vw,48px);line-height:1.15;margin:17px 0}
+.hero p {line-height:1.8;color:#f1eaff;max-width:550px}
+.hero-buttons {display:flex;gap:10px;flex-wrap:wrap;margin-top:23px}
+.hero .btn {background:white;color:#6746e9;box-shadow:none}
+.hero .outline {
+  background:#ffffff18;color:white;border:1px solid #ffffff70;
+}
+.hero-art {
+  position:relative;z-index:1;flex-shrink:0;width:145px;height:145px;
+  border-radius:35px;display:grid;place-items:center;
+  background:#ffffff20;border:1px solid #ffffff55;
+  backdrop-filter:blur(10px);font-size:72px;
+  transform:rotate(7deg);
+  box-shadow:0 20px 45px #3e247933;
+}
+
+.section-label {
+  font-size:11px;font-weight:800;letter-spacing:1.5px;
+  color:var(--muted);margin-bottom:13px;
+}
+
+.stats {
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:15px;margin-bottom:24px;
+}
+
+.stat {
+  position:relative;overflow:hidden;background:var(--panel);
+  border:1px solid var(--border);border-radius:19px;
+  padding:21px;box-shadow:var(--shadow);
+  backdrop-filter:blur(14px);
+}
+
+.stat-top {display:flex;justify-content:space-between;align-items:center;gap:8px}
+.stat-icon {
+  width:43px;height:43px;border-radius:14px;
+  display:grid;place-items:center;font-size:21px;
+}
+.i-purple {background:#eae3ff}
+.i-pink {background:#ffe1f0}
+.i-blue {background:#dff5ff}
+.i-green {background:#d9f9ed}
+
+.stat small {color:var(--muted);font-weight:600;font-size:12px}
+.stat h2 {font-size:31px;margin-top:17px;letter-spacing:-1px}
+.stat-foot {font-size:11px;color:var(--muted);margin-top:7px}
+
+.layout {display:grid;grid-template-columns:minmax(0,1.55fr) minmax(260px,1fr);gap:22px}
+.panel {
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:22px;padding:23px;box-shadow:var(--shadow);
+  backdrop-filter:blur(15px);min-width:0;
+}
+
+.panel-heading {
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;margin-bottom:18px;flex-wrap:wrap;
+}
+.panel-heading h2 {font-size:19px;letter-spacing:-.5px}
+.count {
+  background:#eee9ff;color:#7050ed;border-radius:20px;
+  padding:5px 10px;font-size:11px;font-weight:800;
+}
+
+.controls {display:flex;gap:9px;flex-wrap:wrap;margin-bottom:17px}
+.field {
+  min-width:0;border:1px solid var(--border);border-radius:11px;
+  padding:12px;background:var(--bg);color:var(--text);
+  outline:none;
+}
+#search {width:100%}
+.controls select {flex:1;min-width:110px}
+
+.task-list {display:grid;gap:12px}
+
+.task {
+  display:flex;gap:11px;align-items:flex-start;
+  padding:16px;border:1px solid var(--border);
+  border-radius:16px;background:var(--panel);
+  transition:border-color .2s,transform .2s;
+  animation:appear .3s ease;
+}
+.task:hover {border-color:#a99aff;transform:translateY(-2px)}
+@keyframes appear {
+  from {opacity:0;transform:translateY(7px)}
+  to {opacity:1;transform:translateY(0)}
+}
+
+.check {
+  flex-shrink:0;width:23px;height:23px;border-radius:8px;
+  border:2px solid #b8b5d2;background:transparent;color:white;
+  font-weight:800;margin-top:2px;
+}
+.task.done .check {background:var(--green);border-color:var(--green)}
+.task-info {flex:1;min-width:0}
+.task-title {font-size:14px;font-weight:700;line-height:1.5;overflow-wrap:anywhere}
+.task.done .task-title {text-decoration:line-through;color:var(--muted)}
+.task-notes {font-size:12px;color:var(--muted);margin-top:6px;line-height:1.6;overflow-wrap:anywhere}
+.meta {display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tag {padding:5px 8px;border-radius:7px;font-size:10px;font-weight:800}
+.High {background:#ffe2e9;color:#c62e5b}
+.Medium {background:#fff0d3;color:#986300}
+.Low {background:#d9f9eb;color:#087852}
+.cat {background:#ece7ff;color:#6848d8}
+.due-tag {font-size:10px;color:var(--muted)}
+.actions {display:flex;gap:5px}
+.icon-btn {
+  width:32px;height:32px;border:1px solid var(--border);
+  border-radius:9px;background:var(--bg);color:var(--text);
+}
+.icon-btn.delete {color:#ef4d78}
+
+.empty {text-align:center;padding:45px 10px;color:var(--muted)}
+.empty .emoji {font-size:39px;margin-bottom:12px}
+.empty h3 {color:var(--text);font-size:16px;margin-bottom:7px}
+.empty p {font-size:12px;line-height:1.7}
+
+.progress-card {
+  padding:21px;border-radius:19px;color:white;
+  background:linear-gradient(135deg,#6550e9,#9955ff 55%,#e45cb7);
+  margin-bottom:24px;position:relative;overflow:hidden;
+}
+.progress-card:after {
+  content:"✦";position:absolute;right:15px;top:0;
+  font-size:85px;color:#ffffff17;
+}
+.progress-card small {color:#eee4ff;font-weight:600}
+.progress-number {font-size:40px;font-weight:800;margin:9px 0}
+.track {height:9px;background:#ffffff40;border-radius:20px;overflow:hidden}
+.fill {
+  height:100%;width:0;border-radius:20px;
+  background:linear-gradient(90deg,#67f5d0,#fff);
+  transition:width .5s ease;
+}
+.progress-bottom {font-size:11px;margin-top:12px;color:#f5eaff}
+
+.side-title {font-size:16px;margin-bottom:13px}
+.category-row {
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;padding:13px 0;border-bottom:1px solid var(--border);
+  font-size:13px;
+}
+.category-name {display:flex;align-items:center;gap:9px}
+.dot {width:9px;height:9px;border-radius:50%;background:var(--primary)}
+.category-row b {font-size:12px}
+.cat-track {height:5px;border-radius:10px;background:var(--border);margin-top:8px;overflow:hidden}
+.cat-fill {height:100%;border-radius:10px;background:linear-gradient(90deg,var(--primary),var(--pink))}
+
+.tip {
+  padding:16px;border:1px solid var(--border);border-radius:15px;
+  background:var(--bg);margin-top:22px;
+}
+.tip h3 {font-size:13px;margin-bottom:8px}
+.tip p {font-size:12px;line-height:1.8;color:var(--muted)}
+
+footer {text-align:center;color:var(--muted);font-size:11px;padding:27px 0 5px}
+
+.modal {
+  position:fixed;inset:0;background:#101225c9;
+  display:none;align-items:center;justify-content:center;
+  padding:15px;z-index:10;backdrop-filter:blur(7px);
+}
+.modal.show {display:flex}
+.form-box {
+  width:min(460px,100%);max-height:92vh;overflow:auto;
+  padding:26px;border-radius:23px;background:var(--panel);
+  border:1px solid var(--border);color:var(--text);
+  box-shadow:0 25px 80px #0003;animation:appear .2s ease;
+}
+.form-box h2 {margin-bottom:7px;font-size:22px}
+.form-sub {font-size:12px;color:var(--muted);margin-bottom:20px}
+.form-box label {display:block;font-size:12px;font-weight:700;margin:13px 0 7px}
+.form-box .field {width:100%}
+.form-box textarea {resize:vertical;min-height:75px}
+.form-buttons {display:flex;justify-content:flex-end;gap:9px;margin-top:21px}
+
+.toast {
+  position:fixed;right:20px;bottom:20px;z-index:20;
+  padding:14px 18px;border-radius:13px;
+  background:#292447;color:white;box-shadow:0 10px 30px #0002;
+  opacity:0;transform:translateY(10px);pointer-events:none;transition:.25s;
+  font-size:13px;
+}
+.toast.show {opacity:1;transform:translateY(0)}
+
+@media(max-width:850px) {
+  .layout {grid-template-columns:1fr}
+  .stats {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hero-art {width:105px;height:105px;font-size:53px}
+}
+@media(max-width:520px) {
+  .app {padding-top:16px}
+  .logo {font-size:21px}
+  .hero {padding:25px 20px}
+  .hero-art {display:none}
+  .hero h1 {font-size:32px}
+  .stat {padding:15px}
+  .stat h2 {font-size:26px}
+  .stat-icon {width:36px;height:36px;font-size:18px}
+  .panel {padding:15px}
+  .task {padding:12px}
+  .actions {flex-direction:column}
+  .nav-right .btn {padding:10px}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header class="nav">
+  <div class="logo">✦ TaskFlow <span>Ultra.</span></div>
+  <div class="nav-right">
+    <button class="btn secondary" id="themeBtn" type="button">🌙 Dark mode</button>
+    <button class="btn" id="navAdd" type="button">＋ New task</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="eyebrow">✦ YOUR PERSONAL PRODUCTIVITY STUDIO</div>
+    <h1>Make today<br>extraordinary. 🚀</h1>
+    <p>Plan smarter, stay focused and celebrate every win.<br>
+       Your next achievement starts with one small step.</p>
+    <div class="hero-buttons">
+      <button class="btn" id="heroAdd" type="button">＋ Create a task</button>
+      <button class="btn outline" id="focusBtn" type="button">🎯 Show pending</button>
+    </div>
+  </div>
+  <div class="hero-art" aria-hidden="true">🚀</div>
+</section>
+
+<div class="section-label">YOUR WORKSPACE / OVERVIEW</div>
+
+<section class="stats">
+  <article class="stat">
+    <div class="stat-top">
+      <small>Total tasks</small>
+      <div class="stat-icon i-purple">📋</div>
+    </div>
+    <h2 id="total">0</h2>
+    <div class="stat-foot">All your goals in one place</div>
+  </article>
+  <article class="stat">
+    <div class="stat-top">
+      <small>Completed</small>
+      <div class="stat-icon i-green">✅</div>
+    </div>
+    <h2 id="completed">0</h2>
+    <div class="stat-foot">Every win counts</div>
+  </article>
+  <article class="stat">
+    <div class="stat-top">
+      <small>Pending</small>
+      <div class="stat-icon i-blue">⏳</div>
+    </div>
+    <h2 id="pending">0</h2>
+    <div class="stat-foot">Keep moving forward</div>
+  </article>
+  <article class="stat">
+    <div class="stat-top">
+      <small>Success rate</small>
+      <div class="stat-icon i-pink">⚡</div>
+    </div>
+    <h2 id="rate">0%</h2>
+    <div class="stat-foot">Your progress, live</div>
+  </article>
+</section>
+
+<main class="layout">
+  <section class="panel">
+    <div class="panel-heading">
+      <h2>✨ Your task board</h2>
+      <span class="count" id="visibleCount">0 TASKS</span>
+    </div>
+
+    <div class="controls">
+      <input class="field" id="search" placeholder="🔍 Search tasks..." aria-label="Search tasks">
+      <select class="field" id="filter" aria-label="Filter tasks">
+        <option value="all">All status</option>
+        <option value="pending">Pending</option>
+        <option value="done">Completed</option>
+      </select>
+      <select class="field" id="sort" aria-label="Sort tasks">
+        <option value="newest">Newest</option>
+        <option value="priority">Priority</option>
+        <option value="due">Due date</option>
+      </select>
+    </div>
+
+    <div id="taskList" class="task-list"></div>
+  </section>
+
+  <aside class="panel">
+    <div class="panel-heading">
+      <h2>📈 Productivity</h2>
+    </div>
+
+    <div class="progress-card">
+      <small>OVERALL COMPLETION</small>
+      <div class="progress-number" id="progressText">0%</div>
+      <div class="track"><div class="fill" id="progressFill"></div></div>
+      <div class="progress-bottom" id="progressMessage">Your journey starts today!</div>
+    </div>
+
+    <h3 class="side-title">🎨 Task categories</h3>
+    <div id="categories"></div>
+
+    <div class="tip">
+      <h3>💡 Today's inspiration</h3>
+      <p id="dailyTip">Small steps every day lead to big achievements. Focus on progress, not perfection.</p>
+      <button class="btn secondary" id="tipBtn" type="button" style="margin-top:12px;padding:9px 12px;font-size:11px">✨ New inspiration</button>
+    </div>
+  </aside>
+</main>
+
+<footer>Designed with 💜 | TaskFlow Ultra © 2026</footer>
+</div>
+
+<div class="modal" id="modal">
+  <form class="form-box" id="taskForm">
+    <h2 id="formTitle">Create a new task ✨</h2>
+    <p class="form-sub">Turn your next goal into an achievement.</p>
+
+    <label for="title">Task name *</label>
+    <input class="field" id="title" maxlength="100" required placeholder="e.g. Complete Python project">
+
+    <label for="category">Category</label>
+    <select class="field" id="category">
+      <option>Study</option>
+      <option>Work</option>
+      <option>Personal</option>
+      <option>Health</option>
+      <option>Other</option>
+    </select>
+
+    <label for="priority">Priority</label>
+    <select class="field" id="priority">
+      <option>Medium</option>
+      <option>High</option>
+      <option>Low</option>
+    </select>
+
+    <label for="due">Due date</label>
+    <input class="field" id="due" type="date">
+
+    <label for="notes">Description</label>
+    <textarea class="field" id="notes" maxlength="300" placeholder="Add task details..."></textarea>
+
+    <div class="form-buttons">
+      <button class="btn secondary" id="cancelBtn" type="button">Cancel</button>
+      <button class="btn" id="saveBtn" type="submit">Save task ✓</button>
+    </div>
+  </form>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+const STORAGE_KEY = "taskflow_ultra_tasks";
+const THEME_KEY = "taskflow_ultra_theme";
+
+let tasks = [];
+let editId = null;
+let toastTimer;
+
+const tips = [
+  "Small steps every day lead to big achievements. Focus on progress, not perfection.",
+  "Start with your most important task. One focused step can change your day.",
+  "Your future skills grow from the practice you do today.",
+  "Done is better than perfect. Keep learning and keep improving.",
+  "Break a big goal into small tasks. Make your next step easy to start."
+];
+
+function safe(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[char]);
+}
+
+function notify(message) {
+  $("toast").textContent = message;
+  $("toast").classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    $("toast").classList.remove("show");
+  }, 2300);
+}
+
+function persist() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    return true;
+  } catch (error) {
+    notify("Unable to save. Check browser storage settings.");
+    return false;
+  }
+}
+
+function loadTasks() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    tasks = Array.isArray(saved)
+      ? saved.filter(t =>
+          t && typeof t.id === "string" &&
+          typeof t.title === "string"
+        ).map(t => ({
+          id:t.id,
+          title:t.title,
+          category:["Study","Work","Personal","Health","Other"].includes(t.category) ? t.category : "Other",
+          priority:["High","Medium","Low"].includes(t.priority) ? t.priority : "Medium",
+          due:typeof t.due === "string" ? t.due : "",
+          notes:typeof t.notes === "string" ? t.notes : "",
+          done:Boolean(t.done),
+          created:Number(t.created) || 0
+        }))
+      : [];
+  } catch (error) {
+    tasks = [];
+  }
+}
+
+function openForm(task = null) {
+  editId = task ? task.id : null;
+
+  $("formTitle").textContent = task
+    ? "Edit your task ✏️"
+    : "Create a new task ✨";
+
+  $("saveBtn").textContent = task ? "Update task ✓" : "Save task ✓";
+
+  $("title").value = task ? task.title : "";
+  $("category").value = task ? task.category : "Study";
+  $("priority").value = task ? task.priority : "Medium";
+  $("due").value = task ? task.due : "";
+  $("notes").value = task ? task.notes : "";
+
+  $("modal").classList.add("show");
+  setTimeout(() => $("title").focus(), 50);
+}
+
+function closeForm() {
+  $("modal").classList.remove("show");
+  $("taskForm").reset();
+  editId = null;
+}
+
+function render() {
+  const total = tasks.length;
+  const completed = tasks.filter(t => t.done).length;
+  const pending = total - completed;
+  const rate = total ? Math.round(completed / total * 100) : 0;
+
+  $("total").textContent = total;
+  $("completed").textContent = completed;
+  $("pending").textContent = pending;
+  $("rate").textContent = rate + "%";
+  $("progressText").textContent = rate + "%";
+  $("progressFill").style.width = rate + "%";
+
+  $("progressMessage").textContent = total === 0
+    ? "Create your first task and begin!"
+    : rate === 100
+      ? "Amazing! Every task is complete! 🏆"
+      : completed + " of " + total + " tasks completed. Keep going!";
+
+  const query = $("search").value.toLowerCase().trim();
+  const filter = $("filter").value;
+  const sort = $("sort").value;
+
+  let visible = tasks.filter(t => {
+    const matches = (t.title + " " + t.category + " " + t.notes)
+      .toLowerCase().includes(query);
+    const statusMatches = filter === "all" ||
+      (filter === "done" ? t.done : !t.done);
+    return matches && statusMatches;
+  });
+
+  if (sort === "priority") {
+    const rank = {High:0, Medium:1, Low:2};
+    visible.sort((a,b) => rank[a.priority] - rank[b.priority]);
+  } else if (sort === "due") {
+    visible.sort((a,b) =>
+      (a.due || "9999-99-99").localeCompare(b.due || "9999-99-99")
+    );
+  } else {
+    visible.sort((a,b) => b.created - a.created);
+  }
+
+  $("visibleCount").textContent = visible.length +
+    (visible.length === 1 ? " TASK" : " TASKS");
+
+  if (visible.length === 0) {
+    $("taskList").innerHTML = `
+      <div class="empty">
+        <div class="emoji">${query ? "🔎" : "✨"}</div>
+        <h3>${query ? "No matching tasks" : "Your canvas is empty"}</h3>
+        <p>${query
+          ? "Try another search keyword."
+          : "Create a task and start making progress."}</p>
+      </div>`;
+  } else {
+    $("taskList").innerHTML = visible.map(t => `
+      <article class="task ${t.done ? "done" : ""}">
+        <button type="button" class="check"
+          data-action="toggle" data-id="${safe(t.id)}"
+          aria-label="${t.done ? "Mark pending" : "Complete task"}">
+          ${t.done ? "✓" : ""}
+        </button>
+
+        <div class="task-info">
+          <div class="task-title">${safe(t.title)}</div>
+          ${t.notes ? `<div class="task-notes">${safe(t.notes)}</div>` : ""}
+          <div class="meta">
+            <span class="tag ${safe(t.priority)}">${safe(t.priority)}</span>
+            <span class="tag cat">${safe(t.category)}</span>
+            <span class="due-tag">📅 ${safe(t.due || "No due date")}</span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="icon-btn"
+            data-action="edit" data-id="${safe(t.id)}"
+            aria-label="Edit task" title="Edit">✏️</button>
+          <button type="button" class="icon-btn delete"
+            data-action="delete" data-id="${safe(t.id)}"
+            aria-label="Delete task" title="Delete">🗑️</button>
+        </div>
+      </article>
+    `).join("");
+  }
+
+  const cats = [
+    {name:"Study",dot:"#8560ff"},
+    {name:"Work",dot:"#42a5ff"},
+    {name:"Personal",dot:"#ff65b7"},
+    {name:"Health",dot:"#14c99a"},
+    {name:"Other",dot:"#ffae42"}
+  ];
+
+  $("categories").innerHTML = cats.map(cat => {
+    const count = tasks.filter(t => t.category === cat.name).length;
+    const percent = total ? count / total * 100 : 0;
+
+    return `
+      <div class="category-row">
+        <span class="category-name">
+          <span class="dot" style="background:${cat.dot}"></span>
+          ${cat.name}
+        </span>
+        <b>${count}</b>
+      </div>
+      <div class="cat-track">
+        <div class="cat-fill" style="width:${percent}%;background:${cat.dot}"></div>
+      </div>`;
+  }).join("");
+}
+
+$("taskForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const title = $("title").value.trim();
+  if (!title) {
+    $("title").focus();
+    notify("Please enter a task name.");
+    return;
+  }
+
+  const data = {
+    title,
+    category:$("category").value,
+    priority:$("priority").value,
+    due:$("due").value,
+    notes:$("notes").value.trim()
+  };
+
+  if (editId !== null) {
+    tasks = tasks.map(t => t.id === editId ? {...t,...data} : t);
+    notify("Task updated successfully! ✨");
+  } else {
+    tasks.unshift({
+      id:Date.now().toString() + Math.random().toString(16).slice(2),
+      ...data,
+      done:false,
+      created:Date.now()
+    });
+    notify("New task created! 🎉");
+  }
+
+  persist();
+  closeForm();
+  render();
+});
+
+$("taskList").addEventListener("click", event => {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+
+  const task = tasks.find(t => t.id === button.dataset.id);
+  if (!task) return;
+
+  const action = button.dataset.action;
+
+  if (action === "toggle") {
+    task.done = !task.done;
+    persist();
+    render();
+    notify(task.done ? "Fantastic! Task completed 🎉" : "Task marked pending.");
+  }
+
+  if (action === "edit") openForm(task);
+
+  if (action === "delete" && confirm('Delete "' + task.title + '"?')) {
+    tasks = tasks.filter(t => t.id !== task.id);
+    persist();
+    render();
+    notify("Task deleted.");
+  }
+});
+
+$("navAdd").addEventListener("click", () => openForm());
+$("heroAdd").addEventListener("click", () => openForm());
+$("cancelBtn").addEventListener("click", closeForm);
+
+$("search").addEventListener("input", render);
+$("filter").addEventListener("change", render);
+$("sort").addEventListener("change", render);
+
+$("focusBtn").addEventListener("click", () => {
+  $("filter").value = "pending";
+  $("search").value = "";
+  render();
+  $("search").focus();
+});
+
+$("tipBtn").addEventListener("click", () => {
+  const current = $("dailyTip").textContent;
+  const alternatives = tips.filter(t => t !== current);
+  $("dailyTip").textContent =
+    alternatives[Math.floor(Math.random() * alternatives.length)];
+});
+
+$("themeBtn").addEventListener("click", () => {
+  const dark = document.body.classList.toggle("dark");
+  $("themeBtn").textContent = dark ? "☀️ Light mode" : "🌙 Dark mode";
+  try {
+    localStorage.setItem(THEME_KEY, dark ? "dark" : "light");
+  } catch (error) {}
+});
+
+$("modal").addEventListener("click", event => {
+  if (event.target === $("modal")) closeForm();
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closeForm();
+});
+
+try {
+  if (localStorage.getItem(THEME_KEY) === "dark") {
+    document.body.classList.add("dark");
+    $("themeBtn").textContent = "☀️ Light mode";
+  }
+} catch (error) {}
+
+loadTasks();
+render();
+</script>
+</body>
+</html>
